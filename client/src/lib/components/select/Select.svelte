@@ -1,33 +1,36 @@
 <script lang="ts">
-	import type { Option } from './type';
+	import SelectOption from './SelectOption.svelte';
+import type { Option } from './type';
 	//props
-	export let options: Option[] = [];
+	export let options: Option[];
 	export let label: string = '';
-	export let onSelectChange: (options:Option[]) => undefined | void
-
-	//consts
-	let OPTIONS = options;
+	export let onSelectChange: (options: Option[]) => undefined | void;
 
 	//states
 	let isDialogOpen = false;
+	let selectedOptions:  Option[] | null = null;
 
-	const isSelectedOption = (option: Option) => {
-		return options?.some((opt) => opt.id === option.id);
-	};
+	//handlers
 	const toggleIsDialogOpen = () => {
 		isDialogOpen = !isDialogOpen;
+	};
+	const isSelectedOption = (option: Option) => {
+		return selectedOptions ? selectedOptions.some((opt) => opt.id === option.id) : false
 	};
 
 	const toggleOption = (option: Option) => {
 		const exists = isSelectedOption(option);
 		if (exists) {
-			options = options.filter((opt) => option.id !== opt.id);
+			selectedOptions && (selectedOptions = selectedOptions.filter((opt) => option.id !== opt.id));
 		} else {
-			options = [...options, option];
+			selectedOptions
+				? (selectedOptions = [...selectedOptions, option])
+				: (selectedOptions = [option]);
 		}
-		OPTIONS = [...OPTIONS];
-		onSelectChange(options)
+		options = [...options];
+		onSelectChange(selectedOptions || []);
 	};
+
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -38,34 +41,27 @@
 		on:click={toggleIsDialogOpen}
 		class="relative px-4 py-2 h-full border border-dashed border-neutral-500"
 	>
-		{#if options.length > 0}
+		{#if selectedOptions && selectedOptions?.length > 0}
 			<div class="relative overflow-x-hidden space-x-3">
-				{#each options as option}
-				<span>{option.name}</span>
-			{/each}
-			<div class="text-center absolute right-0 px-2 inset-y-0 bg-neutral-800">
-				{options.length} {" "} Selected
-			</div> 
+				{#each selectedOptions as option}
+					<span>{option.name}</span>
+				{/each}
+				<div class="text-center absolute right-0 px-2 inset-y-0 bg-neutral-800">
+					{options.length}
+					{' '} Selected
+				</div>
 			</div>
 		{:else}
 			<span>Nothing Selected</span>
 		{/if}
-		{#if isDialogOpen}
+		{#if isDialogOpen && options}
 			<div
 				on:click={(e) => e.stopPropagation()}
 				class="absolute inset-x-0 top-full bg-background py-4 border border-dashed"
 			>
 				<div class="flex flex-col gap-4">
-					{#each OPTIONS as option (option.id)}
-						<div
-							class={`flex gap-4 items-center ${
-								isSelectedOption(option) ? 'bg-neutral-700' : 'bg-transparent'
-							} hover:bg-neutral-700 px-4 py-2 cursor-pointer`}
-							on:click={() => toggleOption(option)}
-						>
-							<img alt="Role" src={option.image} class="w-[40px]" />
-							<span class="font-semibold">{option.name}</span>
-						</div>
+					{#each options as option (option.id)}
+						<SelectOption {toggleOption} {isSelectedOption} option={option} />
 					{/each}
 				</div>
 			</div>

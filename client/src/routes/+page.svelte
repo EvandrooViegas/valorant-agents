@@ -2,17 +2,19 @@
 	import Agent from '$components/agent/Agent.svelte';
 	import Select from '$components/select/Select.svelte';
 	import type { Option } from '$components/select/type.js';
+	import { converRolesToOptions, convertOptionsToRoles, getRolesFromAgents } from '$components/select/utils';
 	import valorant from '$lib/services/valorant';
 	import type { iRole } from '$lib/types/agents';
+	import isObjectFalse from '$lib/utils/isObjectFalse';
 	import type { Filter } from './types';
+
 	//data
 	export let data;
-
 	const agents = data.agents;
 
 	//states
 	let filtredAgents = agents;
-	let name = '';
+	let selectedOptions:Option<iRole>[] | null = null
 	//handlers
 	const onSelectChange = (options: Option[]) => {
 		if (!selectedOptions) return;
@@ -20,41 +22,23 @@
 	};
 
 	const filterAgents = async () => {
-		await valorant.filterAgents(filters)			
-	}
+		const response = await valorant.filterAgents(filters);
+		if (response) filtredAgents = [...response];
+		else filtredAgents = []
+	};
 	//
-	const roles = agents
-		?.reduce((curr, agent) => {
-			const exists = curr.map((c) => c.displayName).includes(agent.role.displayName);
-			return exists ? [...curr] : [...curr, agent.role];
-		}, [] as iRole[])
-		.filter((r) => r.displayName !== '' || r.displayIcon !== '');
-
-	let selectedOptions = roles?.map((r, idx) => ({
-		id: idx,
-		name: r.displayName,
-		value: r,
-		image: r.displayIcon
-	})) as Option[];
-
-
+	const roles = getRolesFromAgents(agents)
+	const selectOptions = converRolesToOptions(roles)
 
 	//computed
-	$: filters = {
-		name,
-		roles: selectedOptions.map(o => o.value) as iRole[]
-	} satisfies Filter
+	$: filters = { name: "", roles: convertOptionsToRoles(selectedOptions) } satisfies Filter;
+	$: isFiltering = isObjectFalse(filters)
 
-	$: isFiltering = (() => {
-		if (!filters) return false;
-
-		return Object.keys(filters).some((k) => {
-			const value = filters[k as keyof typeof filters];
-			if (typeof value === 'object') {
-				return Object.keys(value).length > 0;
-			} else return Boolean(value);
-		});
-	})();
+	//state handlers
+	const clearFilters = () => {
+		filters = { name: '', roles: [] };
+		filterAgents()
+	};
 </script>
 
 {#if agents}{#if filtredAgents}
@@ -64,17 +48,22 @@
 					<label for="name" class="font-bold">Name</label>
 					<input
 						id="name"
-						bind:value={name}
+						bind:value={filters.name}
 						class="px-4 py-2 bg-transparent border border-dashed border-neutral-500 outline-none"
 					/>
 				</fieldset>
 				<fieldset>
-					<Select label="Roles" options={selectedOptions} {onSelectChange} />
+					<Select label="Roles" options={selectOptions} {onSelectChange} />
 				</fieldset>
 				{#if isFiltering}
-					<button class=" px-4 py-1.5 bg-primary md:w-fit w-full font-bold font-mono">
-						Filter
-					</button>
+					<div class="space-x-2">
+						<button class=" px-4 py-1.5 bg-primary md:w-fit w-full font-bold font-mono">
+							Filter
+						</button>
+						<button class="underline hover:text-primary" on:click={clearFilters}>
+							Remove Filters
+						</button>
+					</div>
 				{/if}
 			</form>
 			<ul class="grid md:grid-cols-2 grid-cols-1 gap-4">

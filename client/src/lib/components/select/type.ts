@@ -1,6 +1,6 @@
-export interface Option {
+export interface Option<T = any> {
     id: number;
     name: string
-    value: any
+    value: T
     image?: string
-}
+} 

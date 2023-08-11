@@ -47,13 +47,25 @@ func shouldIncludeAgent(
 	if addedAgents[agent.DisplayName] {
 		return false
 	}
-	for _, role := range filters.Roles {
-		if role.Name == agent.Role.Name {
-			return true
+
+	if filters.Name == "" && len(filters.Roles) == 4 {
+		return true
+	}
+
+	if filters.Name == "" {
+		for _, role := range filters.Roles {
+			if role.Name == agent.Role.Name {
+				return true
+			}
 		}
 	}
-	if filters.Name != "" && strings.Contains(strings.ToLower(agent.DisplayName), strings.ToLower(filters.Name)) {
-		return true
+
+	if strings.Contains(strings.ToLower(agent.DisplayName), strings.ToLower(filters.Name)) {
+		for _, role := range filters.Roles {
+			if role.Name == agent.Role.Name {
+				return true
+			}
+		}
 	}
 
 	return false
