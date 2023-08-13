@@ -20,7 +20,8 @@
 	
 </script>
 
-{#if agents}{#if filtredAgents}
+{#if agents}
+	{#if filtredAgents && filterAgents.length > 0}
 		<div class="space-y-12">
 			<FilterForm {agents} {filtredAgents}  onSubmit={filterAgents} />
 			<ul class="grid md:grid-cols-2 grid-cols-1 gap-4">

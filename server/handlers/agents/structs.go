@@ -21,15 +21,20 @@ type Agent struct {
 }
 
 type Filter struct {
-	Roles [] Role `json:"roles"`
-	Name string `json:"name"`
+	Roles []Role `json:"roles"`
+	Name  string `json:"name"`
 }
 
 type FilterRequest struct {
 	Filter Filter `json:"filter"`
-} 
+}
 
 type Response struct {
 	Status int     `json:"status"`
 	Data   []Agent `json:"data"`
+}
+
+type AgentResponse struct {
+	Status int   `json:"status"`
+	Data   Agent `json:"data"`
 }

@@ -17,6 +17,7 @@ func main() {
 
 	agentsGroup := app.Group("/agents")
 	agentsGroup.Get("/", handlers.GetAgentsHandler)
+	agentsGroup.Get("/:id", handlers.GetAgentHandler)
 	agentsGroup.Post("/", handlers.PostAgentsHandler)
 
 

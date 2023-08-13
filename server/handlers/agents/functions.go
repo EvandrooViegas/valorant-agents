@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"valorant-agents/utils"
@@ -16,6 +17,22 @@ func GetAgents() ([]Agent, error) {
 	utils.HandleErr(err)
 
 	var response Response
+	err = json.Unmarshal(data, &response)
+	utils.HandleErr(err)
+
+	return response.Data, nil
+}
+
+func GetAgent(id string) (Agent, error) {
+	url := fmt.Sprintf("https://valorant-api.com/v1/agents/%s", id)
+	request, err := http.Get(url)
+	utils.HandleErr(err)
+	defer request.Body.Close()
+
+	data, err := ioutil.ReadAll(request.Body)
+	utils.HandleErr(err)
+	fmt.Println(string(data))
+	var response AgentResponse
 	err = json.Unmarshal(data, &response)
 	utils.HandleErr(err)
 
@@ -55,15 +72,21 @@ func shouldIncludeAgent(
 	// if the name filter was not passed, filter by the roles
 	if filters.Name == "" {
 		for _, role := range filters.Roles {
-			if role.Name == agent.Role.Name { return true }
+			if role.Name == agent.Role.Name {
+				return true
+			}
 		}
-	// if the roles filter was not passed, filter by the name
+		// if the roles filter was not passed, filter by the name
 	} else if len(filters.Roles) == 0 {
-		if utils.StringContains(agent.DisplayName, filters.Name) { return true }
-		
+		if utils.StringContains(agent.DisplayName, filters.Name) {
+			return true
+		}
+
 	} else if utils.StringContains(agent.DisplayName, filters.Name) {
 		for _, role := range filters.Roles {
-			if role.Name == agent.Role.Name { return true }
+			if role.Name == agent.Role.Name {
+				return true
+			}
 		}
 	}
 	return false
