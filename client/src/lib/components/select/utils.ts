@@ -1,4 +1,5 @@
 import type { iAgent, iRole } from "$lib/types/agents";
+import type Nil from "$lib/types/nil";
 import type { Option } from "./type";
 
 export const convertOptionsToRoles = (options: Option<iRole>[] | undefined | null): iRole[] => {
@@ -6,7 +7,7 @@ export const convertOptionsToRoles = (options: Option<iRole>[] | undefined | nul
     return options.map(opt => opt.value)
 }
 
-export const converRolesToOptions = (roles: iRole[] | undefined): Option<iRole>[] => {
+export const converRolesToOptions = (roles: iRole[] | Nil): Option<iRole>[] => {
     if (!roles) return []
     return roles?.map((r, idx) => ({
         id: idx,
@@ -16,7 +17,7 @@ export const converRolesToOptions = (roles: iRole[] | undefined): Option<iRole>[
     }))
 }
 
-export const getRolesFromAgents = (agents: iAgent[] | undefined) => {
+export const getRolesFromAgents = (agents: iAgent[] | Nil) => {
     return agents
         ?.reduce((curr, agent) => {
             const exists = curr.map((c) => c.displayName)

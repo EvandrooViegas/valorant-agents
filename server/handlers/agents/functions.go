@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"valorant-agents/utils"
 )
 
@@ -30,43 +29,42 @@ func FilterAgents(filters Filter) []Agent {
 	agents, err := GetAgents()
 	utils.HandleErr(err)
 
-	for _, agent := range agents {
-		if shouldIncludeAgent(agent, filters, addedAgents) {
-			filteredList = append(filteredList, agent)
-			addedAgents[agent.DisplayName] = true
+	if filters.Name == "" && len(filters.Roles) == 4 {
+		return agents
+	} else {
+		for _, agent := range agents {
+			if shouldIncludeAgent(agent, filters, addedAgents) {
+				filteredList = append(filteredList, agent)
+				addedAgents[agent.DisplayName] = true
+			}
 		}
+		return filteredList
 	}
-	return filteredList
 }
 
 func shouldIncludeAgent(
-	agent Agent, 
-	filters Filter, 
+	agent Agent,
+	filters Filter,
 	addedAgents map[string]bool,
 ) bool {
+	// if the agent was already added, then ignore it
 	if addedAgents[agent.DisplayName] {
 		return false
 	}
 
-	if filters.Name == "" && len(filters.Roles) == 4 {
-		return true
-	}
-
+	// if the name filter was not passed, filter by the roles
 	if filters.Name == "" {
 		for _, role := range filters.Roles {
-			if role.Name == agent.Role.Name {
-				return true
-			}
+			if role.Name == agent.Role.Name { return true }
 		}
-	}
-
-	if strings.Contains(strings.ToLower(agent.DisplayName), strings.ToLower(filters.Name)) {
+	// if the roles filter was not passed, filter by the name
+	} else if len(filters.Roles) == 0 {
+		if utils.StringContains(agent.DisplayName, filters.Name) { return true }
+		
+	} else if utils.StringContains(agent.DisplayName, filters.Name) {
 		for _, role := range filters.Roles {
-			if role.Name == agent.Role.Name {
-				return true
-			}
+			if role.Name == agent.Role.Name { return true }
 		}
 	}
-
 	return false
 }

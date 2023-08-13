@@ -12,6 +12,7 @@ const valorant = {
         }
     },
     filterAgents: async (filter:Filter): Promise<iAgent[] | undefined> => {
+        console.log(filter)
         try {
             const response = await axios.post("http://127.0.0.1:8080/agents", {
                 filter

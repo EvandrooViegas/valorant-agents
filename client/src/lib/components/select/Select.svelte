@@ -1,22 +1,23 @@
 <script lang="ts">
 	import SelectOption from './SelectOption.svelte';
-import type { Option } from './type';
+	import type { Option } from './type';
+	
 	//props
 	export let options: Option[];
 	export let label: string = '';
 	export let onSelectChange: (options: Option[]) => undefined | void;
+	export let selectedOptions:  Option[] | null
 
 	//states
 	let isDialogOpen = false;
-	let selectedOptions:  Option[] | null = null;
 
 	//handlers
-	const toggleIsDialogOpen = () => {
-		isDialogOpen = !isDialogOpen;
+	const opendDialog = () => {
+		isDialogOpen = true
 	};
-	const isSelectedOption = (option: Option) => {
-		return selectedOptions ? selectedOptions.some((opt) => opt.id === option.id) : false
-	};
+	const closeDialog = () => {
+		isDialogOpen = false
+	}
 
 	const toggleOption = (option: Option) => {
 		const exists = isSelectedOption(option);
@@ -30,6 +31,10 @@ import type { Option } from './type';
 		options = [...options];
 		onSelectChange(selectedOptions || []);
 	};
+	
+	const isSelectedOption = (option: Option) => {
+		return Boolean(selectedOptions?.some((opt) => opt.id === option.id))
+	};
 
 </script>
 
@@ -38,7 +43,9 @@ import type { Option } from './type';
 <div class="flex flex-col justify-center gap-2 h-full">
 	<span>{label}</span>
 	<div
-		on:click={toggleIsDialogOpen}
+		on:click={opendDialog}
+		on:mouseenter={opendDialog}
+		on:mouseleave={closeDialog}
 		class="relative px-4 py-2 h-full border border-dashed border-neutral-500"
 	>
 		{#if selectedOptions && selectedOptions?.length > 0}
@@ -47,7 +54,7 @@ import type { Option } from './type';
 					<span>{option.name}</span>
 				{/each}
 				<div class="text-center absolute right-0 px-2 inset-y-0 bg-neutral-800">
-					{options.length}
+					{selectedOptions.length}
 					{' '} Selected
 				</div>
 			</div>
@@ -56,12 +63,13 @@ import type { Option } from './type';
 		{/if}
 		{#if isDialogOpen && options}
 			<div
+				on:mouseleave={closeDialog}
 				on:click={(e) => e.stopPropagation()}
 				class="absolute inset-x-0 top-full bg-background py-4 border border-dashed"
 			>
 				<div class="flex flex-col gap-4">
 					{#each options as option (option.id)}
-						<SelectOption {toggleOption} {isSelectedOption} option={option} />
+						<SelectOption {toggleOption} {isSelectedOption} {option} />
 					{/each}
 				</div>
 			</div>
