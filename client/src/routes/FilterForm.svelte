@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '$components/button/Button.svelte';
 	import Select from '$components/select/Select.svelte';
 	import type { Option } from '$components/select/type';
 	import {
@@ -55,9 +56,9 @@
 		<Select label="Roles" {selectedOptions} {options} {onSelectChange} />
 	</fieldset>
 	{#if isFiltering}
-		<div class="space-x-2">
-			<button class=" px-4 py-1.5 bg-primary md:w-fit w-full font-bold font-mono">Filter </button>
-			<button class="underline hover:text-primary" on:click={clearFilters}> Remove Filters </button>
+		<div >
+			<Button>Filter </Button>
+			<Button intent="underline" on:click={clearFilters}> Remove Filters </Button>
 		</div>
 	{/if}
 </form>
