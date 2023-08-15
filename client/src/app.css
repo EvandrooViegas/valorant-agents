@@ -15,7 +15,7 @@
 }
 @media only screen and (max-width: 768px) {
 	.gradient-overlay {
-		background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.95) 90%)
+		background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0.95) 90%)
 	}
   }
 
@@ -45,7 +45,9 @@
 	.dark {
 		--background: 0 0% 10%;
 		--foreground: 213 31% 91%;
-		--muted: 223 47% 11%;
+		--muted: 136 0% 26%;
+
+		/* --muted: 223 47% 11%; */
 		--muted-foreground: 215.4 16.3% 56.9%;
 		--accent: 216 34% 17%;
 		--accent-foreground: 210 40% 98%;
