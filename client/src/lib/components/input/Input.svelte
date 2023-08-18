@@ -1,65 +1,40 @@
 <script lang="ts">
-	import Button from '$components/button/Button.svelte';
-	import type { InputType } from './types';
+	import { createContext, type Context } from '$lib/utils/createContext';
+	import Field from './Field.svelte';
+	import Label from './Label.svelte';
+	import type { InputContext, InputType } from './types';
 
 	export let value: string;
 	export let label: string = '';
 	export let name: string;
 	export let containerClassName: string = '';
+	export let errors:Map<string, string>
+	$: error = errors.get(name) 
+	
 
+	const className =
+	'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
 	const type: InputType = $$restProps?.type || 'text';
-	const clsasName =
-		'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
 
-	const onInputChange = (e: Event) => {
-		const inputValue = (e.target as HTMLInputElement).value;
-		value = inputValue;
+	const updateValue = (nValue: any) => {
+		value = nValue;
 	};
-
-	const onFileChange = (e: Event) => {
-		const fileInput = e.target as HTMLInputElement;
-		if (fileInput.files?.[0]) {
-			value = URL.createObjectURL(fileInput.files[0]);
-		}
-	};
-
-	const onChange = (e: Event) => {
-		switch (type) {
-			case 'image': {
-				onFileChange(e);
-				break;
-			}
-			default: {
-				onInputChange(e);
-				break;
-			}
-		}
-	};
-	const props = {
+	const context = createContext<InputContext>('input');
+	context.set({
 		type,
-		'on:change': onChange,
-		'on:input': onInputChange,
-		id: name,
-		class: clsasName,
-		...$$restProps
-	};
+		label,
+		name,
+		className,
+		updateValue
+	});
+
 </script>
 
 <fieldset class={`flex flex-col gap-2 ${containerClassName}`}>
-	{#if label}
-		<label for={name} class="text-sm font-semibold">{label}</label>
-	{/if}
-	{#if label && type === 'file'}
-		<label for={name} class="bg-primary w-fit px-4 py-2 font-mono font-semibold">
-            Upload a file
-        </label>
-	{/if}
+	<Label />
 
-	{#if type === 'textarea'}
-		<textarea {...props} />
-	{:else if type === 'file'}
-		<input {...props} class="hidden" />
-	{:else}
-		<input {...props} />
+	<Field />
+	{#if error}
+		<span class="text-primary text-sm">{error}</span>
 	{/if}
 </fieldset>

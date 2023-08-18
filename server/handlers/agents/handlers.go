@@ -1,4 +1,4 @@
-package handlers
+package agents_handler
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ func GetAgentsHandler(c *fiber.Ctx) error {
 	return c.JSON(agents)
 }
 
-func PostAgentsHandler(c *fiber.Ctx) error {
+func FilterAgentsHandler(c *fiber.Ctx) error {
 	body := c.Body()
 	var request FilterRequest
 	err := json.Unmarshal(body, &request)

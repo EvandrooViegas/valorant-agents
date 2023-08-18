@@ -1,4 +1,4 @@
-package handlers
+package agents_handler
 
 type Role struct {
 	Name string `json:"displayName"`

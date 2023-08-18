@@ -1,13 +1,12 @@
 
 import type { iAgent } from "$lib/types/agents"
-import axios from "axios"
 import type { Filter } from "../../../routes/types"
 import type Nil from "$lib/types/nil"
-import wait from "$lib/utils/wait"
+import server from "$lib/libs/axios"
 const valorant = {
     getAgents: async (): Promise<iAgent[] | undefined> => {
         try {
-            const response = await axios.get("http://127.0.0.1:8080/agents")
+            const response = await server.get("/agents")
             return response.data as iAgent[]
         } catch (error: any) {
             console.log(error)
@@ -15,8 +14,7 @@ const valorant = {
     },
     getAgent: async (agentId: string): Promise<iAgent | Nil> => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8080/agents/${agentId}`)
-            await wait()
+            const response = await server.get(`/agents/${agentId}`)
             return response.data as iAgent
         } catch (error) {
             console.log(error)
@@ -25,7 +23,7 @@ const valorant = {
     },
     filterAgents: async (filter: Filter): Promise<iAgent[] | undefined> => {
         try {
-            const response = await axios.post("http://127.0.0.1:8080/agents", {
+            const response = await server.post("/agents/filter", {
                 filter
             })
             return response.data as iAgent[]
