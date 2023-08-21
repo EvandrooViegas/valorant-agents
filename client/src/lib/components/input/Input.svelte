@@ -4,7 +4,7 @@
 	import Label from './Label.svelte';
 	import type { InputContext, InputType } from './types';
 
-	export let value: string;
+	export let value: string | { url: string, path: string };
 	export let label: string = '';
 	export let name: string;
 	export let containerClassName: string = '';
@@ -19,7 +19,13 @@
 		'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
 	const type: InputType = $$restProps?.type || 'text';
 
-	const updateValue:InputContext["updateValue"] = ({ value: nValue }) => value = nValue;
+	const updateValue:InputContext["updateValue"] = (nValue) => {
+		if(type !== "file") return value = nValue.value 
+		else {
+			const ass = nValue as { url: string; value: string }; // Type assertion
+			value = { url: ass.url, path: ass.value  }
+		}
+	}
 	
 	const context = createContext<InputContext>('input');
 	context.set({

@@ -7,7 +7,7 @@
 	import type { RegisterFormContext } from './types';
 	import player from '$lib/services/player';
 
-	let avatar: string;
+	let avatar: { path: string, url: string } = { path: "", url: "" }
 	let username: string;
 	let password: string;
 	let description: string;
@@ -32,7 +32,7 @@
 	const onSubmit = async (e: SubmitEvent) => {
 		errors.clear();
 		e?.preventDefault();
-		const form = { avatar, username, password, description };
+		const form = { avatar: avatar.url, username, password, description };
 		const result = formSchema.safeParse(form);
 		const hasErrors = 'error' in result;
 		if (hasErrors) {
@@ -81,6 +81,6 @@
 
 	<div>
 		<span>Preview: </span>
-		<PlayerCard {username} {description} {avatar} />
+		<PlayerCard {username} {description} avatar={avatar.path} />
 	</div>
 </form>

@@ -40,7 +40,7 @@
 					<div
 						class="w-full flex flex-col md:flex-row items-center gap-8 border border-neutral-600 p-5"
 					>
-						<img src={abilitie.displayIcon} class="w-[80px] object-contain" />
+						<img src={abilitie.displayIcon} class="w-[80px] object-contain" alt="Display Icon" />
 						<div class="flex flex-col gap-2 md:text-left text-center">
 							<span class="texl-xl font-bold">
 								{abilitie.displayName}
