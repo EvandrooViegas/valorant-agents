@@ -41,9 +41,6 @@
 		class: className
 	};
 </script>
-<button type="button" on:click={handleRemoveImage}>
-	Remove 
-</button>
 {#if type === 'textarea'}
 	<textarea {...props} on:input={onInput} />
 {:else if type === 'file'}
