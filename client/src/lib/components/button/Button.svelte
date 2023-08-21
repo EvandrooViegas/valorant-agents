@@ -6,6 +6,7 @@
       variants: {
         intent: {
           primary: "bg-primary",
+          border: "bg-transparent border border-dashed border-neutral-500 font-mono w-fit",
           underline: "bg-transparent underline hover:text-primary",
         },
         size: {
@@ -14,7 +15,7 @@
         },
       },
       compoundVariants: [
-        { intent: "primary", size: "medium", class: "font-bold font-mono w-fit" },
+        { intent: "primary", size: "medium", class: "font-bold font-mono w-fit transition-all" },
       ],
     });
   

@@ -7,10 +7,19 @@ type Image = {
     url: string
 }
 const storage = {
-    upload: async (form:FormData):Promise<Nil | Image> => {
+    uploadImage: async (file: File, key: string = "avatar"): Promise<Nil | Image> => {
         try {
+            const form = new FormData();
+            form.append(key, file);
             const response = await server.post("/storage/upload", form)
             return response?.data?.image
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    deleteImage: async (name: string) => {
+        try {
+            const response = await server.delete(`/storage/delete/${name}`)
         } catch (error) {
             console.log(error)
         }

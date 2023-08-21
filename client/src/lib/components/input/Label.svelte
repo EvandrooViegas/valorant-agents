@@ -1,17 +1,23 @@
 <script lang="ts">
+	import Button from "$components/button/Button.svelte";
 	import { createContext } from "$lib/utils/createContext";
 	import type { InputContext } from "./types";
 
+	export let isFileUploaded: boolean
 	const context = createContext<InputContext>('input').get();
-	const { label, name, type } = context;
+
+	let { label, name, type } = context;
 
 </script>
+
 
 {#if label}
 	<label for={name} class="text-sm font-semibold">{label}</label>
 {/if}
 {#if label && type === 'file'}
-	<label for={name} class="bg-primary w-fit px-4 py-2 font-mono font-semibold">
-		Upload a file
-	</label>
+<Button intent={isFileUploaded ? "border" : "primary"} >
+	<label for={name}>
+			{isFileUploaded ? "Replace Avatar" : "Upload Avatar"}
+		</label>
+	</Button>
 {/if}

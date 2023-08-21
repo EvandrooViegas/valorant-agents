@@ -7,7 +7,7 @@
 	import type { RegisterFormContext } from './types';
 	import player from '$lib/services/player';
 
-	let avatar: Object;
+	let avatar: string;
 	let username: string;
 	let password: string;
 	let description: string;
@@ -26,32 +26,27 @@
 			.string()
 			.min(5, 'Password must have at least 5 digits')
 			.max(50, 'Password must not have more than 50 digits'),
-		avatar: 
-		z.string()
+		avatar: z.string()
 	});
 
 	const onSubmit = async (e: SubmitEvent) => {
-		errors.clear()
+		errors.clear();
 		e?.preventDefault();
-		const form = { avatar, username, password, description }
+		const form = { avatar, username, password, description };
 		const result = formSchema.safeParse(form);
 		const hasErrors = 'error' in result;
 		if (hasErrors) {
-			const fields = Object.keys(form)
-			const formErrors = result.error.format()
-			fields.forEach(field => {
-				const error = formErrors[field as keyof typeof form]?._errors[0]
-				if(error) {
-					errors = errors.set(field, error)
+			const fields = Object.keys(form);
+			const formErrors = result.error.format();
+			fields.forEach((field) => {
+				const error = formErrors[field as keyof typeof form]?._errors[0];
+				if (error) {
+					errors = errors.set(field, error);
 				}
-			})
+			});
 		} else {
-			
-			const result = await player.create(form)
-
-			// const result = await player.create(form)
+			const result = await player.create(form);
 		}
-		
 	};
 
 	const contextKey = 'register-form';
@@ -60,18 +55,9 @@
 	context.set(contextValue);
 </script>
 
-<form
-	on:submit={onSubmit}
-	enctype="multipart/form-data"
-	class="grid grid-cols-2 gap-4"
->
-	<Input 
-	errors={errors}
-	formContext={context} label="Username" bind:value={username} name="username" />
-	<Input 
-	errors={errors}
-	
-	formContext={context} label="Password" bind:value={password} name="password" />
+<form on:submit={onSubmit} enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
+	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
+	<Input {errors} formContext={context} label="Password" bind:value={password} name="password" />
 	<Input
 		formContext={context}
 		label="Description"
@@ -80,13 +66,12 @@
 		maxlength="150"
 		type="textarea"
 		containerClassName="col-span-2"
-		errors={errors}
+		{errors}
 	/>
 	<Input
 		formContext={context}
 		label="Avatar"
-		errors={errors}
-
+		{errors}
 		bind:value={avatar}
 		name="avatar"
 		type="file"
