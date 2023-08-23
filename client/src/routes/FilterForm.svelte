@@ -1,14 +1,14 @@
 <script lang="ts">
-	import Button from '$components/button/Button.svelte';
-	import Select from '$components/select/Select.svelte';
-	import type { Option } from '$components/select/type';
+	import Button from '../lib/components/button/Button.svelte';
+	import Select from '../lib/components/select/Select.svelte';
+	import type { Option } from '../lib/components/select/type';
 	import {
 		converRolesToOptions,
 		convertOptionsToRoles,
 		getRolesFromAgents
-	} from '$components/select/utils';
-	import type { iAgent, iRole } from '$lib/types/agents';
-	import isObjectFalse from '$lib/utils/isObjectFalse';
+	} from '../lib/components/select/utils';
+	import type { iAgent, iRole } from '../lib/types/agents';
+	import isObjectFalse from '../lib/utils/isObjectFalse';
 	import type { Filter } from './types';
 
 	export let onSubmit: (filters: Filter) => Promise<void>;

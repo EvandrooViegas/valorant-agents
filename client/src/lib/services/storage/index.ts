@@ -1,5 +1,5 @@
-import server from "$lib/libs/axios"
-import type Nil from "$lib/types/nil"
+import server from "../../../lib/libs/axios"
+import type Nil from "../../../lib/types/nil"
 
 type Image = {
     name: string,

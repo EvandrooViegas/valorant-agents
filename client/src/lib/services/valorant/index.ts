@@ -1,8 +1,8 @@
 
-import type { iAgent } from "$lib/types/agents"
+import type { iAgent } from "../../../lib/types/agents"
 import type { Filter } from "../../../routes/types"
-import type Nil from "$lib/types/nil"
-import server from "$lib/libs/axios"
+import type Nil from "../../../lib/types/nil"
+import server from "../../../lib/libs/axios"
 const valorant = {
     getAgents: async (): Promise<iAgent[] | undefined> => {
         try {

@@ -1,5 +1,4 @@
-import server from "$lib/libs/axios"
-import type { iPlayer } from "$lib/types/player"
+import type { iPlayer } from "../../../lib/types/player"
 
 type PlayerToCreate = iPlayer & { password: string }
 

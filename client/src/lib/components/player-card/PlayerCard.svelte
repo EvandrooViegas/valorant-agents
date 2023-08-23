@@ -1,6 +1,6 @@
 <script lang="ts">
-    import defaultAvatar from "$lib/assets/default-avatar.png"
-	import type Nil from "$lib/types/nil";
+    import defaultAvatar from "../../assets/default-avatar.png"
+	import type Nil from "../../types/nil";
 
     export let username:Nil | string
     export let description: Nil | string

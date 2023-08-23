@@ -1,6 +1,6 @@
 <script>
-	import Navbar from "$components/navbar/Navbar.svelte";
-	import Toaster from "$components/toaster/Toaster.svelte";
+	import Navbar from "../lib/components/navbar/Navbar.svelte";
+	import Toaster from "../lib/components/toaster/Toaster.svelte";
   import "../app.css";
 </script>
 

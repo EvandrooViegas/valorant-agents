@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Agent from '$components/agent/Agent.svelte';
-	import valorant from '$lib/services/valorant';
+	import Agent from '../lib/components/agent/Agent.svelte';
+	import valorant from '../lib/services/valorant';
 	import FilterForm from './FilterForm.svelte';
 	import type { Filter } from './types.js';
 

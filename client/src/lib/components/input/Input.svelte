@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createContext } from '$lib/utils/createContext';
+	import { createContext } from '../../utils/createContext';
 	import Field from './Field.svelte';
 	import Label from './Label.svelte';
 	import type { InputContext, InputType } from './types';

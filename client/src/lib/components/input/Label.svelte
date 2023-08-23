@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from "$components/button/Button.svelte";
-	import { createContext } from "$lib/utils/createContext";
+	import Button from "../../components/button/Button.svelte";
+	import { createContext } from "../../utils/createContext";
 	import type { InputContext } from "./types";
 
 	export let isFileUploaded: boolean
@@ -10,7 +10,7 @@
 
 </script>
 
-
+Hello World
 {#if label}
 	<label for={name} class="text-sm font-semibold">{label}</label>
 {/if}

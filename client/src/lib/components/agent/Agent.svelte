@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { iAgent } from '$lib/types/agents';
+	import type { iAgent } from '../../types/agents';
 	export let agent: iAgent;
 </script>
 

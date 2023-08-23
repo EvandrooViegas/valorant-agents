@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { toaster } from "$lib/stores/toaster";
+	import { toaster } from "../../../lib/stores/toaster";
 	import Item from "./Item.svelte";
     toaster.add({ title: "Hi" })
 </script>

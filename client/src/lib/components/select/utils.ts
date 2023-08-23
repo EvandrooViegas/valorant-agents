@@ -1,5 +1,5 @@
-import type { iAgent, iRole } from "$lib/types/agents";
-import type Nil from "$lib/types/nil";
+import type { iAgent, iRole } from "../../../lib/types/agents";
+import type Nil from "../../../lib/types/nil";
 import type { Option } from "./type";
 
 export const convertOptionsToRoles = (options: Option<iRole>[] | undefined | null): iRole[] => {

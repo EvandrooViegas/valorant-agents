@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Button from '$components/button/Button.svelte';
-	import Input from '$components/input/Input.svelte';
-	import PlayerCard from '$components/player-card/PlayerCard.svelte';
-	import { createContext } from '$lib/utils/createContext';
+	import Button from '../../../lib/components/button/Button.svelte';
+	import Input from '../../../lib/components/input/Input.svelte';
+	import PlayerCard from '../../../lib/components/player-card/PlayerCard.svelte';
+	import { createContext } from '../../../lib/utils/createContext';
 	import z from 'zod';
 	import type { RegisterFormContext } from './types';
-	import player from '$lib/services/player';
-
+	import player from '../../../lib/services/player';
+	
 	let avatar: { path: string, url: string } = { path: "", url: "" }
 	let username: string;
 	let password: string;
@@ -55,7 +55,11 @@
 	context.set(contextValue);
 </script>
 
+<span>
+	Hello World Evandro
+</span>
 <form on:submit={onSubmit} enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
+	
 	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
 	<Input {errors} formContext={context} label="Password" bind:value={password} name="password" />
 	<Input

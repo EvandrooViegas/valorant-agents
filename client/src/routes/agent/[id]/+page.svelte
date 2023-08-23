@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type Nil from '$lib/types/nil.js';
-	import type { iAgent } from '$lib/types/agents.js';
+	import type Nil from '../../../lib/types/nil.js';
+	import type { iAgent } from '../../../lib/types/agents.js';
 
 	export let data;
 	const agent: Nil | iAgent = data?.agent;

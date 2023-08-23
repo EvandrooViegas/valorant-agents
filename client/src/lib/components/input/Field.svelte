@@ -1,7 +1,7 @@
 <script lang="ts">
-	import storage from '$lib/services/storage';
-	import { toaster } from '$lib/stores/toaster';
-	import { createContext } from '$lib/utils/createContext';
+	import storage from '../../services/storage';
+	import { toaster } from '../../stores/toaster';
+	import { createContext } from '../../utils/createContext';
 	import type { InputContext } from './types';
 
 	const context = createContext<InputContext>('input').get();
@@ -32,6 +32,9 @@
 			console.log('error uploading the image', error);
 		}
 	};
+	// unit -> vitest
+	// integration
+	// e2e
 	const handleRemoveImage = () => {
 		if (lastImageUploaded) storage.deleteImage(lastImageUploaded);
 	};
