@@ -31,9 +31,6 @@
 			console.log('error uploading the image', error);
 		}
 	};
-	// unit -> vitest
-	// integration
-	// e2e
 	const handleRemoveImage = () => {
 		if (lastImageUploaded) storage.deleteImage(lastImageUploaded);
 	};

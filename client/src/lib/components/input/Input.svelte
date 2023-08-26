@@ -40,6 +40,6 @@
 	<Label {isFileUploaded} />
 	<Field />
 	{#if error}
-		<span class="text-primary text-sm" id="input-error">{error}</span>
+		<span data-testid={`${name}-error`} class="text-primary text-sm" >{error}</span>
 	{/if}
 </fieldset>
