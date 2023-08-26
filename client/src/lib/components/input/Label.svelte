@@ -10,7 +10,6 @@
 
 </script>
 
-Hello World
 {#if label}
 	<label for={name} class="text-sm font-semibold">{label}</label>
 {/if}

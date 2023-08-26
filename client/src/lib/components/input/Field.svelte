@@ -22,9 +22,8 @@
 			if (!image) return;
 			toaster.add({ title: 'Image Upload Successfully', description: 'Beautify Avatar Btw' });
 
-			const imagePath = URL.createObjectURL(file)
-			updateValue({ type: "file", value: imagePath, url: image.url }, name);
-
+			updateValue({ type: "file", value: URL.createObjectURL(file), url: image.url }, name);
+		
 			setIsFileUploaded(true);
 			handleRemoveImage();
 			lastImageUploaded = image.name;
@@ -39,6 +38,7 @@
 		if (lastImageUploaded) storage.deleteImage(lastImageUploaded);
 	};
 	const props = {
+		"data-testid": name,
 		type,
 		id: name,
 		class: className

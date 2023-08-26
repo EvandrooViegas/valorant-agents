@@ -1,5 +1,8 @@
 .PHONY: client server
 
+test-client:
+	cd ./client && clear && npm run test
+
 client:
 	cd ./client && npm run dev
 

@@ -6,8 +6,9 @@
 	import z from 'zod';
 	import type { RegisterFormContext } from './types';
 	import player from '../../../lib/services/player';
-	
-	let avatar: { path: string, url: string } = { path: "", url: "" }
+	import validateSchema from '../../../lib/utils/validateSchema';
+
+	let avatar: { path: string; url: string } = { path: '', url: '' };
 	let username: string;
 	let password: string;
 	let description: string;
@@ -28,25 +29,17 @@
 			.max(50, 'Password must not have more than 50 digits'),
 		avatar: z.string()
 	});
-
 	const onSubmit = async (e: SubmitEvent) => {
-		errors.clear();
 		e?.preventDefault();
+		errors = new Map()
 		const form = { avatar: avatar.url, username, password, description };
-		const result = formSchema.safeParse(form);
-		const hasErrors = 'error' in result;
-		if (hasErrors) {
-			const fields = Object.keys(form);
-			const formErrors = result.error.format();
-			fields.forEach((field) => {
-				const error = formErrors[field as keyof typeof form]?._errors[0];
-				if (error) {
-					errors = errors.set(field, error);
-				}
-			});
-		} else {
-			const result = await player.create(form);
+		const result  = validateSchema(formSchema, form)
+		if(result.type === "error") {
+			errors = result.errors
+			return
 		}
+		errors = new Map()
+		const response = player.create(form)
 	};
 
 	const contextKey = 'register-form';
@@ -55,11 +48,12 @@
 	context.set(contextValue);
 </script>
 
-<span>
-	Hello World Evandro
-</span>
-<form on:submit={onSubmit} enctype="multipart/form-data" class="grid grid-cols-2 gap-4">
-	
+<form
+	on:submit={onSubmit}
+	enctype="multipart/form-data"
+	class="grid grid-cols-2 gap-4"
+	data-testid="form"
+>
 	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
 	<Input {errors} formContext={context} label="Password" bind:value={password} name="password" />
 	<Input
@@ -81,7 +75,7 @@
 		type="file"
 		accept="image/png, image/jpeg"
 	/>
-	<Button type="submit" class="col-span-2">Submit</Button>
+	<Button type="submit" class="col-span-2" id="submit-btn">Submit</Button>
 
 	<div>
 		<span>Preview: </span>

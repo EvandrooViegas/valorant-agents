@@ -13,7 +13,6 @@
 
 	$: error = errors.get(name);
 	const setIsFileUploaded = (bool:boolean) => isFileUploaded = bool
-	
 
 	const className =
 		'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
@@ -26,7 +25,6 @@
 			value = { url: ass.url, path: ass.value  }
 		}
 	}
-	
 	const context = createContext<InputContext>('input');
 	context.set({
 		type,
@@ -42,6 +40,6 @@
 	<Label {isFileUploaded} />
 	<Field />
 	{#if error}
-		<span class="text-primary text-sm">{error}</span>
+		<span class="text-primary text-sm" id="input-error">{error}</span>
 	{/if}
 </fieldset>
