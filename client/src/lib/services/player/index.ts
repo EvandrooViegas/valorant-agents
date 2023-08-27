@@ -7,7 +7,7 @@ const player = {
 
     create: async (player:PlayerToCreate) => {
         try {
-            // const response = await server.post("/players/register", { player })
+            const response = await server.post("/players/register", { player })
         } catch (error) {
             console.log(error)
         }

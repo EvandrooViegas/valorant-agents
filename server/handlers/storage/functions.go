@@ -17,11 +17,11 @@ func SaveImage(c *fiber.Ctx, file *multipart.FileHeader) (UploadImageResponse, e
 	fileExt := strings.Split(file.Filename, ".")[1]
 	image := fmt.Sprintf("%s.%s", filename, fileExt)
 	path := fmt.Sprintf("./storage/avatars/%s", image)
-	fmt.Println(path)
 	err := c.SaveFile(file, path)
 	if err != nil {
 		utils.HandleErr(err)
-		return UploadImageResponse{}, utils.HandleJSONerror(c, fiber.Map{"status": 500, "message": "Server error", "data": err})
+
+		return UploadImageResponse{}, err
 	}
 	imageUrl := fmt.Sprintf("http://127.0.0.1:8080/storage/avatars/%s", image)
 
@@ -36,7 +36,7 @@ func RemoveImage(c *fiber.Ctx, name string) error {
 	path := fmt.Sprintf("./storage/avatars/%s", name)
 	err := os.Remove(path)
 	if err != nil {
-		return utils.HandleJSONerror(c, fiber.Map{"status": 500, "message": "Error Deleting Image", "data": err})
+		return err
 	}
-	return c.JSON(fiber.Map{"status": 201, "message": "Image Deleted Successfully", "data": nil})
+	return nil
 }

@@ -1,15 +1,20 @@
 package players_handler
 
 import (
-	"fmt"
+	"encoding/json"
+	"valorant-agents/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func RegisterPlayerHandler(c *fiber.Ctx) error {
 	body := c.Body()
-	fmt.Println(string(body))
-	return fmt.Errorf("s")
+	var request CreatePlayerRequest 
+	err := json.Unmarshal(body, &request)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 500, Message: "Error Parsing the data", Error: err })
+	}
+	return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 200, Message: "Success", Data: body })
 }
 
 func GeneratePasswordHandler(c *fiber.Ctx) error {

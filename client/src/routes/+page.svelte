@@ -17,13 +17,15 @@
 		else filtredAgents = [];
 	};
 
-	
+	const resetFilteredAgents = () => {
+		filtredAgents = agents
+	}
 </script>
 
 {#if agents}
 	{#if filtredAgents && filterAgents.length > 0}
 		<div class="space-y-12">
-			<FilterForm {agents} {filtredAgents}  onSubmit={filterAgents} />
+			<FilterForm {agents} {resetFilteredAgents} onSubmit={filterAgents} />
 			<ul class="grid md:grid-cols-2 grid-cols-1 gap-4">
 				<div class="col-span-2">
 					<h3 class="text-3xl font-semibold font-museo">Agents:</h3>

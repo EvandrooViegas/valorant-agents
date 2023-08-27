@@ -10,15 +10,21 @@ import (
 
 func GetAgents() ([]Agent, error) {
 	request, err := http.Get("https://valorant-api.com/v1/agents")
-	utils.HandleErr(err)
+	if err != nil {
+		return []Agent{}, err
+	}
 	defer request.Body.Close()
 
 	data, err := ioutil.ReadAll(request.Body)
-	utils.HandleErr(err)
+	if err != nil {
+		return []Agent{}, err
+	}
 
 	var response Response
 	err = json.Unmarshal(data, &response)
-	utils.HandleErr(err)
+	if err != nil {
+		return []Agent{}, err
+	}
 
 	return response.Data, nil
 }
@@ -26,28 +32,36 @@ func GetAgents() ([]Agent, error) {
 func GetAgent(id string) (Agent, error) {
 	url := fmt.Sprintf("https://valorant-api.com/v1/agents/%s", id)
 	request, err := http.Get(url)
-	utils.HandleErr(err)
+	if err != nil {
+		return Agent{}, err
+	}
 	defer request.Body.Close()
 
 	data, err := ioutil.ReadAll(request.Body)
-	utils.HandleErr(err)
+	if err != nil {
+		return Agent{}, err
+	}
 	fmt.Println(string(data))
 	var response AgentResponse
 	err = json.Unmarshal(data, &response)
-	utils.HandleErr(err)
+	if err != nil {
+		return Agent{}, err
+	}
 
 	return response.Data, nil
 }
 
-func FilterAgents(filters Filter) []Agent {
+func FilterAgents(filters Filter) ([]Agent, error) {
 	var filteredList []Agent
 	addedAgents := make(map[string]bool)
 
 	agents, err := GetAgents()
-	utils.HandleErr(err)
+	if err != nil {
+		return []Agent{}, err
+	}
 
 	if filters.Name == "" && len(filters.Roles) == 4 {
-		return agents
+		return agents, nil
 	} else {
 		for _, agent := range agents {
 			if shouldIncludeAgent(agent, filters, addedAgents) {
@@ -55,7 +69,7 @@ func FilterAgents(filters Filter) []Agent {
 				addedAgents[agent.DisplayName] = true
 			}
 		}
-		return filteredList
+		return filteredList, nil
 	}
 }
 

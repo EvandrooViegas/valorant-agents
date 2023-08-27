@@ -13,25 +13,21 @@
 
 	export let onSubmit: (filters: Filter) => Promise<void>;
 	export let name: string = '';
-	export let filtredAgents: iAgent[] | null;
 	export let agents: iAgent[] | null;
-
+	export let resetFilteredAgents: () => void
 	const roles = getRolesFromAgents(agents);
 
 	let options = converRolesToOptions(roles);
 	let selectedOptions: Option<iRole>[] | null = null;
 
 	//computed
-	$: selectedRoles = convertOptionsToRoles(selectedOptions);
-	$: isFiltering = isObjectFalse({ name, selectedRoles });
-
+	$: isFiltering = isObjectFalse({ name, selectedRoles: convertOptionsToRoles(selectedOptions) });
 	//state handlers
 	const clearFilters = () => {
 		name = '';
-		selectedRoles = [];
 		selectedOptions = null;
-		filtredAgents = agents;
-
+		resetFilteredAgents()
+		
 		// to trigger a re-render on the select component
 		options = [...options];
 	};
@@ -39,7 +35,7 @@
 		selectedOptions = options;
 	};
 	const handleSubmit = () => {
-		onSubmit({ name, roles: selectedRoles });
+		onSubmit({ name, roles: convertOptionsToRoles(selectedOptions) });
 	};
 </script>
 
@@ -56,9 +52,9 @@
 		<Select label="Roles" {selectedOptions} {options} {onSelectChange} />
 	</fieldset>
 	{#if isFiltering}
-		<div >
-			<Button>Filter </Button>
-			<Button intent="underline" on:click={clearFilters}> Remove Filters </Button>
+		<div>
+			<Button type="submit">Filter</Button>
+			<button on:click={clearFilters}>Remove Filters</button>
 		</div>
 	{/if}
 </form>

@@ -10,22 +10,31 @@ import (
 
 func GetAgentHandler(c *fiber.Ctx) error {
 	id := c.Params("id")
-	agent, error := GetAgent(id)
-	utils.HandleErr(error)
-	return c.JSON(agent)
+	agent, err := GetAgent(id)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 500, Message: "Error Getting the agent", Error: err })
+	}
+	return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 200, Message: "Success", Data: agent })
 }
 
 func GetAgentsHandler(c *fiber.Ctx) error {
 	agents, err := GetAgents()
-	utils.HandleErr(err)
-	return c.JSON(agents)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 500, Message: "Error Getting the agents", Error: err })
+	}
+	return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 200, Message: "Success", Data: agents })
 }
 
 func FilterAgentsHandler(c *fiber.Ctx) error {
 	body := c.Body()
 	var request FilterRequest
 	err := json.Unmarshal(body, &request)
-	utils.HandleErr(err)
-	filteredAgents := FilterAgents(request.Filter)
-	return c.JSON(filteredAgents)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 500, Message: "Error Parsering the agents", Error: err })
+	}
+	filteredAgents, err := FilterAgents(request.Filter)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 500, Message: "Error Filtering the agents", Error: err })
+	}
+	return utils.WriteJSON(c, utils.WriteJSONpayload{ Status: 200, Message: "Success", Data: filteredAgents })
 }

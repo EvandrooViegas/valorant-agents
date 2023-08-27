@@ -7,7 +7,7 @@ const valorant = {
     getAgents: async (): Promise<iAgent[] | undefined> => {
         try {
             const response = await server.get("/agents")
-            return response.data as iAgent[]
+            return response.data?.data as iAgent[]
         } catch (error: any) {
             console.log(error)
         }
@@ -15,7 +15,9 @@ const valorant = {
     getAgent: async (agentId: string): Promise<iAgent | Nil> => {
         try {
             const response = await server.get(`/agents/${agentId}`)
-            return response.data as iAgent
+            console.log(response.data.data )
+
+            return response.data?.data as iAgent
         } catch (error) {
             console.log(error)
 
@@ -26,7 +28,8 @@ const valorant = {
             const response = await server.post("/agents/filter", {
                 filter
             })
-            return response.data as iAgent[]
+            console.log(response.data.data)
+            return response.data?.data as iAgent[]
         } catch (error: any) {
             console.log(error)
         }
