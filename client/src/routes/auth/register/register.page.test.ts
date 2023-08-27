@@ -48,7 +48,7 @@ describe("register page", () => {
         storageUploadMock.mockRestore()
 
     });
-    it("should not call the function to create the player if the field are filled correctly and show up error messages", async () => {
+    it("should not call the function to create the player if the field are filled incorrectly and show up error messages", async () => {
         const playerCreateMock = jest.spyOn(player, "create")
         const storageUploadMock = jest.spyOn(storage, "uploadImage")
         playerCreateMock.mockImplementation(() => Promise.resolve())

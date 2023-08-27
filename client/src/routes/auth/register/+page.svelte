@@ -55,7 +55,7 @@
 	data-testid="form"
 >
 	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
-	<Input {errors} formContext={context} label="Password" bind:value={password} name="password" />
+	<Input {errors} formContext={context} label="Password" bind:value={password} type="password" name="password" />
 	<Input
 		formContext={context}
 		label="Description"
