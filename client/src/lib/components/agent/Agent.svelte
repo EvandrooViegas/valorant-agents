@@ -4,6 +4,7 @@
 </script>
 
 <a
+	data-testid={`agent-${agent.displayName}`}
 	data-sveltekit-preload-data={'off'}
 	class="transition-all flex flex-col md:flex-row gap-4 items-center border border-neutral-600 border-dashed hover:border-primary p-5"
 	href={`/agent/${agent.uuid}`}

@@ -1,31 +1,24 @@
 {
-    "preset": "ts-jest",
+	"preset": "ts-jest",
 	"transform": {
 		"^.+\\.svelte$": [
-		  "svelte-jester",
-		  {
-			"preprocess": true
-		  }
+			"svelte-jester",
+			{
+				"preprocess": true
+			}
 		],
 		"^.+\\.ts$": [
-		  "ts-jest",
-		  {
-			"useESM": true
-		  }
+			"ts-jest",
+			{
+				"useESM": true
+			}
 		]
-	  },
+	},
 
-	  "moduleFileExtensions": [
-		"js",
-		"ts",
-		"svelte"
-	  ],
-	  "extensionsToTreatAsEsm": [
-		".svelte",
-		".ts"
-	  ],
+	"moduleFileExtensions": ["js", "ts", "svelte"],
+	"extensionsToTreatAsEsm": [".svelte", ".ts"],
 	"testEnvironment": "jsdom",
 	"moduleNameMapper": {
 		"\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js"
-	  }
+	}
 }

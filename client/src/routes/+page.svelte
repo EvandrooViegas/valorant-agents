@@ -6,7 +6,7 @@
 
 	//data
 	export let data;
-	const agents = data.agents;
+	const agents = data?.agents || [];
 
 	//states
 	let filtredAgents = agents;
