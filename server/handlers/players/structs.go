@@ -1,12 +1,7 @@
-package players_handler 
+package players_handler
 
-type RequestPlayer struct {
-	Avatar string `json:"avatar"`
-	Username string `json:"username"`
-	Description string `json:"description"`
-	Password string `json:"password"`
-}
+import "valorant-agents/services"
 
 type CreatePlayerRequest struct {
-	Player RequestPlayer `json:"player"`
+	Player services.RequestPlayer `json:"player"`
 }

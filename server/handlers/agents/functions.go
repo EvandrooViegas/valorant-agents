@@ -41,8 +41,7 @@ func GetAgent(id string) (Agent, error) {
 	if err != nil {
 		return Agent{}, err
 	}
-	fmt.Println(string(data))
-	var response AgentResponse
+ 	var response AgentResponse
 	err = json.Unmarshal(data, &response)
 	if err != nil {
 		return Agent{}, err

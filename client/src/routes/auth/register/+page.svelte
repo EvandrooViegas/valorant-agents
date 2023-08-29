@@ -39,7 +39,7 @@
 			return
 		}
 		errors = new Map()
-		const response = player.create(form)
+		const response = await player.create(form)
 	};
 
 	const contextKey = 'register-form';

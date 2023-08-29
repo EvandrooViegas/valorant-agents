@@ -22,6 +22,7 @@
 
 	//computed
 	$: isFiltering = isObjectFalse({ name, selectedRoles: convertOptionsToRoles(selectedOptions) });
+	$: console.log(isFiltering)
 	//state handlers
 	const clearFilters = () => {
 		name = '';
@@ -39,7 +40,7 @@
 	};
 </script>
 
-<form class="md:grid grid-cols-2 gap-4" on:submit={handleSubmit}>
+<form data-testId="filter-form" class="md:grid grid-cols-2 gap-4" on:submit={handleSubmit}>
 	<fieldset class="flex flex-col gap-2">
 		<label for="name" class="font-bold">Name</label>
 		<input
