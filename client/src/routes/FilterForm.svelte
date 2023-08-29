@@ -43,18 +43,19 @@
 	<fieldset class="flex flex-col gap-2">
 		<label for="name" class="font-bold">Name</label>
 		<input
+		data-testid="filter-form-name-input"
 			id="name"
 			bind:value={name}
 			class="px-4 py-2 bg-transparent border border-dashed border-neutral-500 outline-none"
 		/>
 	</fieldset>
 	<fieldset>
-		<Select label="Roles" {selectedOptions} {options} {onSelectChange} />
-	</fieldset>
+		<Select dataTestId="filter-form-select" label="Roles" {selectedOptions} {options} {onSelectChange} />
+	</fieldset>  
 	{#if isFiltering}
 		<div>
-			<Button type="submit">Filter</Button>
-			<button on:click={clearFilters}>Remove Filters</button>
+			<Button type="submit" dataTestId="filter-btn">Filter</Button>
+			<button type="button" on:click={clearFilters} data-testId="remove-filter-btn">Remove Filters</button>
 		</div>
 	{/if}
 </form>

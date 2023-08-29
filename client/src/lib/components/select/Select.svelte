@@ -1,23 +1,20 @@
 <script lang="ts">
 	import SelectOption from './SelectOption.svelte';
 	import type { Option } from './type';
-	
+
 	//props
 	export let options: Option[];
 	export let label: string = '';
 	export let onSelectChange: (options: Option[]) => undefined | void;
-	export let selectedOptions:  Option[] | null
-
+	export let selectedOptions: Option[] | null;
+	export let dataTestId: string = '';
 	//states
 	let isDialogOpen = false;
-
 	//handlers
-	const opendDialog = () => {
-		isDialogOpen = true
-	};
-	const closeDialog = () => {
-		isDialogOpen = false
-	}
+	const opendDialog = () => isDialogOpen = true;
+	const closeDialog = () => isDialogOpen = false;
+	const toggleDialog = () => isDialogOpen = !isDialogOpen;
+	
 
 	const toggleOption = (option: Option) => {
 		const exists = isSelectedOption(option);
@@ -31,21 +28,19 @@
 		options = [...options];
 		onSelectChange(selectedOptions || []);
 	};
-	
-	const isSelectedOption = (option: Option) => {
-		return Boolean(selectedOptions?.some((opt) => opt.id === option.id))
-	};
 
+	const isSelectedOption = (option: Option) => {
+		return Boolean(selectedOptions?.some((opt) => opt.id === option.id));
+	};
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="flex flex-col justify-center gap-2 h-full">
+<div class="flex flex-col justify-center gap-2 h-full" >
 	<span>{label}</span>
 	<div
-		on:click={opendDialog}
-		on:mouseenter={opendDialog}
-		on:mouseleave={closeDialog}
+	data-testid={dataTestId}
+		on:click={toggleDialog}
 		class="relative px-4 py-2 h-full border border-dashed border-neutral-500"
 	>
 		{#if selectedOptions && selectedOptions?.length > 0}

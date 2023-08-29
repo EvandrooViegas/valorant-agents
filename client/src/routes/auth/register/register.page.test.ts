@@ -40,7 +40,7 @@ describe("register page", () => {
         await fireEvent.change(avatarInput, { target: { files: [file] } });
 
         // submit
-        form.submit()
+        await fireEvent.submit(form)
 
         // expect that the player.create function was called
         expect(player.create).toBeCalled();
@@ -72,7 +72,7 @@ describe("register page", () => {
         expect(screen.queryAllByTestId("description-error")).toHaveLength(0)
         
         // submit
-        await form.submit()
+        await fireEvent.submit(form)
 
         // expect that the errors messages are being shown after submiting the form
         expect(screen.queryAllByTestId("username-error")).toHaveLength(1)
