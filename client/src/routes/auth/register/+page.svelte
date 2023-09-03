@@ -31,15 +31,21 @@
 	});
 	const onSubmit = async (e: SubmitEvent) => {
 		e?.preventDefault();
-		errors = new Map()
-		const form = { avatar: avatar.url, username, password, description };
-		const result  = validateSchema(formSchema, form)
-		if(result.type === "error") {
-			errors = result.errors
-			return
-		}
-		errors = new Map()
-		const response = await player.create(form)
+		const response = await player.create({
+			avatar: '',
+			description: 'my description',
+			password: 'my password',
+			username: String(Math.random())
+		});
+		// errors = new Map()
+		// const form = { avatar: avatar.url, username, password, description };
+		// const result  = validateSchema(formSchema, form)
+		// if(result.type === "error") {
+		// 	errors = result.errors
+		// 	return
+		// }
+		// errors = new Map()
+		// const response = await player.create(form)
 	};
 
 	const contextKey = 'register-form';
@@ -55,7 +61,14 @@
 	data-testid="form"
 >
 	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
-	<Input {errors} formContext={context} label="Password" bind:value={password} type="password" name="password" />
+	<Input
+		{errors}
+		formContext={context}
+		label="Password"
+		bind:value={password}
+		type="password"
+		name="password"
+	/>
 	<Input
 		formContext={context}
 		label="Description"

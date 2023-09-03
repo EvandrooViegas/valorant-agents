@@ -22,7 +22,6 @@
 
 	//computed
 	$: isFiltering = isObjectFalse({ name, selectedRoles: convertOptionsToRoles(selectedOptions) });
-	$: console.log(isFiltering)
 	//state handlers
 	const clearFilters = () => {
 		name = '';

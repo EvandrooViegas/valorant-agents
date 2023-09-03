@@ -7,18 +7,26 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+
 )
 
 
-var PORT string = ":8080"
+var PORT string = ":5000"
 
 func main() {
 	app := fiber.New()
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+		AllowOrigins: "http://localhost:5173",
+	}))
+	
 	app.Static("/storage/avatars", "./storage/avatars")
 
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON("Hello World")
+	})
 	//agents handlers
-	agentsGroup := app.Group("/agents")
+	agentsGroup := app.Group("/agents") 
 	agentsGroup.Get("/", agents_handler.GetAgentsHandler)
 	agentsGroup.Get("/:id", agents_handler.GetAgentHandler)
 	agentsGroup.Post("/filter", agents_handler.FilterAgentsHandler)

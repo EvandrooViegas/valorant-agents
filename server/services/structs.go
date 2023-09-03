@@ -1,6 +1,9 @@
 package services
+
+import "github.com/golang-jwt/jwt/v4"
+
 type Player struct {
-	ID          string  `db:"id" json:"id"` 
+	ID          string `json:"id" bson:"id"`
 	Avatar      string `json:"avatar"`
 	Username    string `json:"username"`
 	Description string `json:"description"`
@@ -18,4 +21,11 @@ type DatabaseNewPlayer struct {
 	Description string `json:"description" bson:"description,omitempty"`
 	Password    string `json:"password" bson:"password,omitempty"`
 	Avatar      string `json:"avatar" bson:"avatar,omitempty"`
+}
+type IDPlayerTokenClaim struct {
+	ID string   `json:"id" bson:"id"`
+}
+type PlayerTokenClaims struct {
+	jwt.RegisteredClaims
+	Player IDPlayerTokenClaim `json:"player"`
 }

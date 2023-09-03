@@ -5,9 +5,13 @@ type PlayerToCreate = iPlayer & { password: string }
 
 const player = {
 
-    create: async (player:PlayerToCreate) => {
+    create: async (player: PlayerToCreate) => {
         try {
-            const response = await server.post("/players/register", { player })
+      
+            const response = await server.post("/players/register", { player }, {   
+                withCredentials: true,
+            })
+            console.log(response)
         } catch (error) {
             console.log(error)
         }

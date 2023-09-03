@@ -3,6 +3,7 @@ package players_handler
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 	"valorant-agents/services"
 	"valorant-agents/utils"
 
@@ -19,15 +20,14 @@ func RegisterPlayerHandler(c *fiber.Ctx) error {
 
 	foundPlayers, err := services.FilterPlayerWithUsername(request.Player.Username)
 	if err != nil {
-		return  utils.WriteJSON(c, utils.WriteJSONpayload{
-			Status: fiber.StatusInternalServerError,
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status:  fiber.StatusInternalServerError,
 			Message: "A error occured",
 		})
 	}
-	fmt.Println(foundPlayers)
 	if len(foundPlayers) > 0 {
-		return  utils.WriteJSON(c, utils.WriteJSONpayload{
-			Status: fiber.StatusOK,
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status:  fiber.StatusOK,
 			Message: "A player with the same username was found, choose another one",
 		})
 	}
@@ -35,19 +35,30 @@ func RegisterPlayerHandler(c *fiber.Ctx) error {
 	nPlayer, err := services.CreatePlayer(request.Player)
 	if err != nil {
 		return utils.WriteJSON(c, utils.WriteJSONpayload{
-			Status: fiber.StatusInternalServerError,	
+			Status:  fiber.StatusInternalServerError,
 			Message: "Couldn't Create Player",
 		})
-	}	
+	}
 
-	// should return token
-	return utils.WriteJSON(c, utils.WriteJSONpayload{
-		Status:  fiber.StatusCreated,
-		Message: "Created Player Successfully",
-		Data:   nPlayer,
+	token, err := services.CreatePlayerToken(services.IDPlayerTokenClaim{
+		ID: nPlayer.ID,
 	})
 
-
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status:  fiber.StatusInternalServerError,
+			Message: "Could not create token",
+			Error:   err,
+		})
+	}
+	fmt.Println("tokne created: ", token)
+	c.Cookie(&fiber.Cookie{
+		Name:  "token",
+		Value: token,
+		Expires: time.Now().Add(24 * time.Hour),
+		Path: "/",
+	})
+	return nil
 }
 
 func GeneratePasswordHandler(c *fiber.Ctx) error {

@@ -2,9 +2,13 @@ package services
 
 import (
 	"context"
+	"os"
+	"time"
 	m "valorant-agents/mongo"
 	"valorant-agents/utils"
 
+	"github.com/golang-jwt/jwt/v4"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,4 +58,19 @@ func FilterPlayerWithUsername(username string) ([]Player, error) {
 		return make([]Player, 0), err
 	}
 	return []Player{player}, nil
+}
+
+func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return "", err
+	}
+	tokenSecretKey := []byte(os.Getenv("TOKEN_SECRET_KEY"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &PlayerTokenClaims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Minute)),
+		},
+		Player: player,
+	})
+	return token.SignedString(tokenSecretKey)
 }

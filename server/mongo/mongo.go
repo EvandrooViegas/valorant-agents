@@ -2,7 +2,6 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -35,7 +34,6 @@ func ConnectToMongoDB() (*mongo.Client, error) {
 	if err := MongoDB.Database("admin").RunCommand(context.TODO(), bson.D{{ "ping", 1 }}).Err(); err != nil {
 		return nil, err
 	}
-	fmt.Println("You successfully connected to MongoDB 📦")
 	return MongoDB, nil
 }
 
@@ -43,7 +41,6 @@ func DisconnectFromMongoDB() error {
 	if err := MongoDB.Disconnect(context.TODO()); err != nil {
 		return err
 	} else {
-		fmt.Println("You successfully disconnected from MongoD 📦")
 		return nil
 	}
 }
