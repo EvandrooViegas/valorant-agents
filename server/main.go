@@ -7,7 +7,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-
 )
 
 
@@ -19,7 +18,6 @@ func main() {
 		AllowCredentials: true,
 		AllowOrigins: "http://localhost:5173",
 	}))
-	
 	app.Static("/storage/avatars", "./storage/avatars")
 
 	app.Get("/health", func(c *fiber.Ctx) error {

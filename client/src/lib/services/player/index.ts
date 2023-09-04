@@ -7,7 +7,6 @@ const player = {
 
     create: async (player: PlayerToCreate) => {
         try {
-      
             const response = await server.post("/players/register", { player }, {   
                 withCredentials: true,
             })

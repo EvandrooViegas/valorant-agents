@@ -1,4 +1,6 @@
 <script lang="ts">
+	import server from '$lib/libs/axios';
+	import type { iAgent } from '$lib/types/agents';
 	import Agent from '../lib/components/agent/Agent.svelte';
 	import valorant from '../lib/services/valorant';
 	import FilterForm from './FilterForm.svelte';
@@ -6,8 +8,7 @@
 
 	//data
 	export let data;
-	const agents = data?.agents ;
-
+	const agents = data?.agents;
 	//states
 	let filtredAgents = agents;
 	//handlers
@@ -16,10 +17,10 @@
 		if (response) filtredAgents = [...response];
 		else filtredAgents = [];
 	};
-
 	const resetFilteredAgents = () => {
-		filtredAgents = agents
-	}
+		filtredAgents = agents;
+	};
+
 </script>
 
 {#if agents}
