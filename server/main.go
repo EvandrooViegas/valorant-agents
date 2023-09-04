@@ -31,6 +31,7 @@ func main() {
 
 	//players handlers
 	playersGroup := app.Group("/players")
+	playersGroup.Get("/auth", players_handler.AuthPlayerHandler)
 	playersGroup.Post("/register", players_handler.RegisterPlayerHandler)
 	playersGroup.Get("/generate/password", players_handler.GeneratePasswordHandler)
 	//storage handlers

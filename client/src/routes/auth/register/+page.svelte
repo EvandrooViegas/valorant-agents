@@ -7,6 +7,8 @@
 	import type { RegisterFormContext } from './types';
 	import player from '../../../lib/services/player';
 	import validateSchema from '../../../lib/utils/validateSchema';
+	import { toaster } from '$lib/stores/toaster';
+	import { goto } from '$app/navigation';
 
 	let avatar: { path: string; url: string } = { path: '', url: '' };
 	let username: string;
@@ -30,22 +32,40 @@
 		avatar: z.string()
 	});
 	const onSubmit = async (e: SubmitEvent) => {
-		e?.preventDefault();
-		const response = await player.create({
-			avatar: '',
-			description: 'my description',
-			password: 'my password',
-			username: String(Math.random())
-		});
-		// errors = new Map()
-		// const form = { avatar: avatar.url, username, password, description };
-		// const result  = validateSchema(formSchema, form)
-		// if(result.type === "error") {
-		// 	errors = result.errors
-		// 	return
-		// }
-		// errors = new Map()
-		// const response = await player.create(form)
+		try {
+			e?.preventDefault();
+			errors = new Map();
+			const form = { avatar: avatar.url, username, password, description };
+			const result = validateSchema(formSchema, form);
+			if (result.type === 'error') {
+				errors = result.errors;
+				return;
+			}
+			errors = new Map();
+
+			const response = await player.create(form);
+			toaster.add({
+				title: 'Error',
+				description: 'Could not create an account, try again later',
+				type: 'success'
+			});
+			const id = response?.id;
+			if (id) {
+				location.reload()
+			} else {
+				toaster.add({
+					title: 'Error',
+					description: 'An error occurred',
+					type: 'error'
+				});
+			}
+		} catch (error) {
+			toaster.add({
+				title: 'Error',
+				description: 'Could not create an account, try again later',
+				type: 'error'
+			});
+		}
 	};
 
 	const contextKey = 'register-form';
@@ -57,7 +77,7 @@
 <form
 	on:submit={onSubmit}
 	enctype="multipart/form-data"
-	class="grid grid-cols-2 gap-4"
+	class="mx-auto max-w-[800px] flex flex-col md:grid md:grid-cols-2 gap-4"
 	data-testid="form"
 >
 	<Input {errors} formContext={context} label="Username" bind:value={username} name="username" />
@@ -90,8 +110,8 @@
 	/>
 	<Button type="submit" class="col-span-2" id="submit-btn">Submit</Button>
 
-	<div>
-		<span>Preview: </span>
+	<div class="mt-8 col-span-2">
+		<span class="font-museo font-semibold text-xl">Player Card Preview: </span>
 		<PlayerCard {username} {description} avatar={avatar.path} />
 	</div>
 </form>

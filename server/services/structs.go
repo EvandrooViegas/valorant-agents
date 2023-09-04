@@ -3,7 +3,7 @@ package services
 import "github.com/golang-jwt/jwt/v4"
 
 type Player struct {
-	ID          string `json:"id" bson:"id"`
+	ID          string `json:"_id" bson:"_id"`
 	Avatar      string `json:"avatar"`
 	Username    string `json:"username"`
 	Description string `json:"description"`

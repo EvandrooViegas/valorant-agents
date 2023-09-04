@@ -1,3 +1,5 @@
+import type Nil from "$lib/types/nil"
+import { cookie } from "$lib/utils/cookie"
 import server from "../../../lib/libs/axios"
 import type { iPlayer } from "../../../lib/types/player"
 
@@ -10,9 +12,9 @@ const player = {
             const response = await server.post("/players/register", { player }, {   
                 withCredentials: true,
             })
-            console.log(response)
+            return response?.data.data as { id: string } | undefined
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     },
 
@@ -21,7 +23,21 @@ const player = {
             const response = await server.get("/players/generate/password")
             return response.data
         } catch (error) {
-            console.log(error)
+            console.error(error)
+        }
+    },
+
+    getUser: async ():Promise<iPlayer | Nil> => {
+        try {
+            const token = cookie.get("token")
+            if (token) {
+                const response = await server.get("/players/auth")
+                console.log(response)
+            } else {
+                return null
+            }
+        } catch (error) {
+            console.error(error)
         }
     }
 }

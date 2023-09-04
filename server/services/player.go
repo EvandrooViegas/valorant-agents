@@ -14,13 +14,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+
+var databaseName string = "valgents"
+var playerCollection string = "players"
 func CreatePlayer(player RequestPlayer) (Player, error) {
 	client, err := m.ConnectToMongoDB()
 	defer m.DisconnectFromMongoDB()
 	if err != nil {
 		return Player{}, err
 	}
-	coll := client.Database("valgents").Collection("players")
+	coll := client.Database(databaseName).Collection(playerCollection)
 
 	result, err := coll.InsertOne(context.TODO(), DatabaseNewPlayer{
 		Username:    player.Username,
@@ -43,10 +46,11 @@ func CreatePlayer(player RequestPlayer) (Player, error) {
 
 func FilterPlayerWithUsername(username string) ([]Player, error) {
 	client, err := m.ConnectToMongoDB()
+	defer m.DisconnectFromMongoDB()
 	if err != nil {
 		return make([]Player, 0), err
 	}
-	coll := client.Database("valgents").Collection("players")
+	coll := client.Database(databaseName).Collection(playerCollection)
 	filter := bson.D{{Key: "username", Value: username}}
 
 	var player Player
@@ -60,6 +64,27 @@ func FilterPlayerWithUsername(username string) ([]Player, error) {
 	return []Player{player}, nil
 }
 
+func GetPlayerByID(ID string) (Player, error) {
+	var player Player
+	client, err := m.ConnectToMongoDB()
+	defer m.DisconnectFromMongoDB()
+	if err != nil {
+		return player, nil
+	}
+
+	coll := client.Database(databaseName).Collection(playerCollection)
+	objectID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return player, err
+	}
+	filter  := bson.D{{ "_id", objectID }}
+	err = coll.FindOne(context.Background(), filter).Decode(&player)
+	if err != nil {
+		return player, nil
+	}
+	return player, nil
+}
+
 func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -68,9 +93,31 @@ func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
 	tokenSecretKey := []byte(os.Getenv("TOKEN_SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &PlayerTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
 		Player: player,
 	})
 	return token.SignedString(tokenSecretKey)
+}
+
+
+
+func ReadPlayerToken(tokenString string) (IDPlayerTokenClaim, error) {
+	playerClaim := IDPlayerTokenClaim{}
+	err := godotenv.Load(".env")
+	if err != nil {
+		return playerClaim, err
+	}
+	tokenSecretKey := []byte(os.Getenv("TOKEN_SECRET_KEY"))
+
+	token, err := jwt.ParseWithClaims(tokenString, &PlayerTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return tokenSecretKey, nil
+	})
+
+	if claims, ok := token.Claims.(*PlayerTokenClaims); ok && token.Valid {
+		playerClaim = claims.Player
+		return claims.Player, nil
+	}  else {
+		return playerClaim, err
+	}
 }

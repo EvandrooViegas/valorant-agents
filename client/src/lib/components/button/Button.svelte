@@ -8,6 +8,7 @@
           primary: "bg-primary",
           border: "bg-transparent border border-dashed border-neutral-500 font-mono w-fit",
           underline: "bg-transparent underline hover:text-primary",
+          ghost: "bg-neutral-600/60 font-mono w-fit font-semibold"
         },
         size: {
           small: "px-2 py-1",
@@ -27,7 +28,8 @@
       export let dataTestId: $$Props["dataTestId"] = ""
   </script>
   
-  <button type="button" {...$$props} class={button({ intent, size, class: $$props.class })} data-testid={dataTestId}>
+  <button type="button" {...$$props} class={button({ intent, size, class: $$props.class + " flex gap-2 items-center" })} data-testid={dataTestId}>
+    <slot class="w-8" name="icon" />
     <slot />
   </button>
   

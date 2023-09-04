@@ -1,13 +1,20 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import NavLink from './NavLink.svelte';
-	import links from './links';
+
+	
+	const links = [
+		{ name: 'Agents', url: '/agents' },
+		{ name: 'Favourites', url: '/favourites' },
+		{ name: 'Login', url: '/auth/login' },
+		{ name: 'Register', url: '/auth/register' }
+	];
 </script>
 
 <nav class="flex justify-between items-center p-5">
 	<a href="/" class="flex gap-3 text-primary text-3xl font-extrabold font-museo">
-        <Icon icon="simple-icons:valorant" />
-		<span class="text-white">VALGENTS</span> 
+		<Icon icon="simple-icons:valorant" />
+		<span class="text-white">VALGENTS</span>
 	</a>
 	<header>
 		<ul class="flex gap-4">

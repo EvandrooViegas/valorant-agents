@@ -58,9 +58,34 @@ func RegisterPlayerHandler(c *fiber.Ctx) error {
 		Expires: time.Now().Add(24 * time.Hour),
 		Path: "/",
 	})
-	return nil
+	return utils.WriteJSON(c, utils.WriteJSONpayload{
+		Status: fiber.StatusCreated,
+		Message: "Player Created",
+		Data: map[string]string{
+			"id": nPlayer.ID,
+		},
+	})
 }
 
+func AuthPlayerHandler(c *fiber.Ctx) error {
+	token := c.Cookies("token")
+	claims, err := services.ReadPlayerToken(token)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON(map[string]interface{}{
+			"error": err,
+		})	
+	}
+	id := claims.ID
+	player, err := services.GetPlayerByID(id)
+	if err != nil {
+		fmt.Println(err)
+		return c.JSON("hi")
+	}
+	return c.JSON(map[string]interface{}{
+		"player": player,
+	})
+}
 func GeneratePasswordHandler(c *fiber.Ctx) error {
 	password := GeneratePassword()
 	return c.JSON(password)
