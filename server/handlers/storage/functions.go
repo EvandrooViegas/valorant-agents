@@ -23,7 +23,7 @@ func SaveImage(c *fiber.Ctx, file *multipart.FileHeader) (UploadImageResponse, e
 
 		return UploadImageResponse{}, err
 	}
-	imageUrl := fmt.Sprintf("http://127.0.0.1:8080/storage/avatars/%s", image)
+	imageUrl := fmt.Sprintf("http://localhost:5000/storage/avatars/%s", image)
 
 	return UploadImageResponse{
 		Name: image,

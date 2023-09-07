@@ -9,6 +9,7 @@ export type InputContext = {
     name: string;
     className: string;
     label: string
+    showGeneratePasswordBtn: boolean,
     updateValue: (nValue: Value, name: string) => void
     setIsFileUploaded: (bool: boolean) => void
 };   

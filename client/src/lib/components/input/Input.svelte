@@ -10,7 +10,7 @@
 	export let containerClassName: string = '';
 	export let errors: Map<string, string>;
 	export let isFileUploaded = false;
-
+	export let showGeneratePasswordBtn = true
 	$: error = errors.get(name);
 	const setIsFileUploaded = (bool:boolean) => isFileUploaded = bool
 
@@ -32,7 +32,8 @@
 		name,
 		className,
 		setIsFileUploaded,
-		updateValue
+		updateValue,
+		showGeneratePasswordBtn
 	});
 </script>
 

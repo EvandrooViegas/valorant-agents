@@ -6,9 +6,10 @@
 	import Hide from '../icons/Hide.svelte';
 	import Show from '../icons/Show.svelte';
 	import type { InputContext } from './types';
-	
+
 	const context = createContext<InputContext>('input').get();
-	const { type, updateValue, name, className, setIsFileUploaded } = context;
+	const { type, updateValue, name, className, setIsFileUploaded, showGeneratePasswordBtn } =
+		context;
 	let lastImageUploaded: string | undefined;
 	let fieldValue: string;
 	let showPassword: boolean = false;
@@ -70,14 +71,16 @@
 		>
 			<button type="button" class="p-2 bg-neutral-700" on:click={toggleShowPassword}>
 				{#if showPassword}
-				<Show />
+					<Show />
 				{:else}
-				<Hide />
+					<Hide />
 				{/if}
 			</button>
-			<button type="button" on:click={generatePassword} class="p-2 bg-neutral-700"
-				>Generate Password
-			</button>
+			{#if showGeneratePasswordBtn}
+				<button type="button" on:click={generatePassword} class="p-2 bg-neutral-700"
+					>Generate Password
+				</button>
+			{/if}
 		</div>
 	</div>
 {:else}

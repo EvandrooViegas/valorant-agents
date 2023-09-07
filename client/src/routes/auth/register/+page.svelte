@@ -8,7 +8,6 @@
 	import player from '../../../lib/services/player';
 	import validateSchema from '../../../lib/utils/validateSchema';
 	import { toaster } from '$lib/stores/toaster';
-	import { goto } from '$app/navigation';
 
 	let avatar: { path: string; url: string } = { path: '', url: '' };
 	let username: string;
@@ -51,7 +50,7 @@
 			});
 			const id = response?.id;
 			if (id) {
-				location.reload()
+				location.replace("/")
 			} else {
 				toaster.add({
 					title: 'Error',

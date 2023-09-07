@@ -71,19 +71,25 @@ func AuthPlayerHandler(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	claims, err := services.ReadPlayerToken(token)
 	if err != nil {
-		fmt.Println(err)
-		return c.JSON(map[string]interface{}{
-			"error": err,
-		})	
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status: fiber.StatusUnauthorized,
+			Message: "The token is invalid",
+		})
 	}
 	id := claims.ID
 	player, err := services.GetPlayerByID(id)
 	if err != nil {
-		fmt.Println(err)
-		return c.JSON("hi")
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status: fiber.StatusInternalServerError,
+			Message: "Could not fetch the user",
+		})
 	}
-	return c.JSON(map[string]interface{}{
-		"player": player,
+	return utils.WriteJSON(c, utils.WriteJSONpayload{
+		Status: fiber.StatusOK,
+		Message: "Fetched the user successfully",
+		Data: map[string]interface{}{
+			"player": player,
+		},
 	})
 }
 func GeneratePasswordHandler(c *fiber.Ctx) error {

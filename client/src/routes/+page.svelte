@@ -1,6 +1,4 @@
 <script lang="ts">
-	import server from '$lib/libs/axios';
-	import type { iAgent } from '$lib/types/agents';
 	import Agent from '../lib/components/agent/Agent.svelte';
 	import valorant from '../lib/services/valorant';
 	import FilterForm from './FilterForm.svelte';
@@ -27,7 +25,7 @@
 	{#if filtredAgents && filterAgents.length > 0}
 		<div class="space-y-12">
 			<FilterForm {agents} {resetFilteredAgents} onSubmit={filterAgents} />
-			<ul class="grid md:grid-cols-2 grid-cols-1 gap-4">
+			<ul class="md:grid md:grid-cols-2 flex flex-col gap-4">
 				<div class="col-span-2">
 					<h3 class="text-3xl font-semibold font-museo">Agents:</h3>
 				</div>
