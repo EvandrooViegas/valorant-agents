@@ -7,6 +7,7 @@
 	import Show from '../icons/Show.svelte';
 	import type { InputContext } from './types';
 
+
 	const context = createContext<InputContext>('input').get();
 	const { type, updateValue, name, className, setIsFileUploaded, showGeneratePasswordBtn } =
 		context;
@@ -56,7 +57,7 @@
 </script>
 
 {#if type === 'textarea'}
-	<textarea {...props} bind:value={fieldValue} on:input={onInput} />
+	<textarea  {...props} bind:value={fieldValue} on:input={onInput} />
 {:else if type === 'file'}
 	<input {...props} on:change={onFileChange} class="hidden" />
 {:else if type === 'password'}

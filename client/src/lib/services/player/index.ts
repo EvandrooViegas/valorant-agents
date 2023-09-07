@@ -21,7 +21,7 @@ const login = async (player:PlayerToLogin) => {
         const response = await server.post("/players/login", { player }, {
             withCredentials: true,
         })
-        console.log(response)
+        return response.data?.data as { logged_successfully: boolean } | undefined
     } catch (error) {
         console.error(error)
     }
@@ -41,6 +41,18 @@ const getPlayer = async (): Promise<iPlayer | Nil> => {
         console.error(error)
     }
 }
+const getPlayerByUsername = async (username: string) => {
+    try {
+            const response = await server.get(`/players/${username}`, {
+                withCredentials: true
+
+            })
+          
+            return response?.data?.data?.player as { player: iPlayer | undefined } | undefined
+    } catch (error) {
+        console.error(error)
+    }
+}
 const generatePassword = async () => {
     try {
         const response = await server.get("/players/generate/password")
@@ -49,6 +61,16 @@ const generatePassword = async () => {
         console.error(error)
     }
 }
-const player = { create, generatePassword, getPlayer, login }
+
+const logout = async () => {
+    try {
+        await server.get("/players/logout", {
+            withCredentials: true
+        })
+    } catch (error) {
+        console.error(error)
+    }
+}
+const player = { create, generatePassword, getPlayer, login, logout, getPlayerByUsername }
 
 export default player

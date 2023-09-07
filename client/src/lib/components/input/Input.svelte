@@ -15,7 +15,8 @@
 	const setIsFileUploaded = (bool:boolean) => isFileUploaded = bool
 
 	const className =
-		'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
+		// 'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed hover:outline-primary focus:outline-primary';
+		'w-full p-3 bg-transparent text-white outline-1 outline-neutral-500 outline-dashed disabled:hover:cursor-disabled hover:outline-primary focus:outline-primary';
 	const type: InputType = $$restProps?.type || 'text';
 
 	const updateValue:InputContext["updateValue"] = (nValue) => {

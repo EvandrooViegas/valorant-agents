@@ -14,7 +14,7 @@
 	let password: string;
 	let description: string;
 	let errors = new Map<string, string>();
-
+	let loading = false
 	const formSchema = z.object({
 		username: z
 			.string()
@@ -31,6 +31,7 @@
 		avatar: z.string()
 	});
 	const onSubmit = async (e: SubmitEvent) => {
+		loading = true
 		try {
 			e?.preventDefault();
 			errors = new Map();
@@ -65,6 +66,7 @@
 				type: 'error'
 			});
 		}
+		loading = false
 	};
 
 	const contextKey = 'register-form';
@@ -107,7 +109,7 @@
 		type="file"
 		accept="image/png, image/jpeg"
 	/>
-	<Button type="submit" class="col-span-2" id="submit-btn">Submit</Button>
+	<Button {loading} type="submit" class="col-span-2" id="submit-btn">Submit</Button>
 
 	<div class="mt-8 col-span-2">
 		<span class="font-museo font-semibold text-xl">Player Card Preview: </span>
