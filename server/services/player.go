@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 	m "valorant-agents/mongo"
@@ -14,21 +15,24 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const (
+	DATABASE_NAME     = "valgents"
+	PLAYER_COLLECTION = "players"
+)
 
-var databaseName string = "valgents"
-var playerCollection string = "players"
-func CreatePlayer(player RequestPlayer) (Player, error) {
+var TOKEN_AND_COOKIE_EXPIRITY_TIME = time.Now().Add(720 * time.Hour) // 1 Month
+func CreatePlayer(player RegisterPlayerRequest) (Player, error) {
 	client, err := m.ConnectToMongoDB()
 	defer m.DisconnectFromMongoDB()
 	if err != nil {
 		return Player{}, err
 	}
-	coll := client.Database(databaseName).Collection(playerCollection)
-
+	coll := client.Database(DATABASE_NAME).Collection(PLAYER_COLLECTION)
+	hashedPassword := utils.CreateHash(player.Password)
 	result, err := coll.InsertOne(context.TODO(), DatabaseNewPlayer{
 		Username:    player.Username,
 		Description: player.Description,
-		Password:    utils.CreateHash(player.Password),
+		Password:    hashedPassword,
 		Avatar:      player.Avatar,
 	})
 	if err != nil {
@@ -40,6 +44,7 @@ func CreatePlayer(player RequestPlayer) (Player, error) {
 		ID:          nPlayerID,
 		Avatar:      player.Avatar,
 		Username:    player.Username,
+		Password:    hashedPassword,
 		Description: player.Description,
 	}, nil
 }
@@ -50,7 +55,7 @@ func FilterPlayerWithUsername(username string) ([]Player, error) {
 	if err != nil {
 		return make([]Player, 0), err
 	}
-	coll := client.Database(databaseName).Collection(playerCollection)
+	coll := client.Database(DATABASE_NAME).Collection(PLAYER_COLLECTION)
 	filter := bson.D{{Key: "username", Value: username}}
 
 	var player Player
@@ -72,12 +77,29 @@ func GetPlayerByID(ID string) (Player, error) {
 		return player, nil
 	}
 
-	coll := client.Database(databaseName).Collection(playerCollection)
+	coll := client.Database(DATABASE_NAME).Collection(PLAYER_COLLECTION)
 	objectID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return player, err
 	}
-	filter  := bson.D{{ "_id", objectID }}
+	filter := bson.D{{"_id", objectID}}
+	err = coll.FindOne(context.Background(), filter).Decode(&player)
+	if err != nil {
+		return player, nil
+	}
+	return player, nil
+}
+
+func GetPlayerByUsername(username string) (Player, error) {
+	var player Player
+	client, err := m.ConnectToMongoDB()
+	defer m.DisconnectFromMongoDB()
+	if err != nil {
+		return player, nil
+	}
+
+	coll := client.Database(DATABASE_NAME).Collection(PLAYER_COLLECTION)
+	filter := bson.D{{"username", username}}
 	err = coll.FindOne(context.Background(), filter).Decode(&player)
 	if err != nil {
 		return player, nil
@@ -93,14 +115,12 @@ func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
 	tokenSecretKey := []byte(os.Getenv("TOKEN_SECRET_KEY"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &PlayerTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(TOKEN_AND_COOKIE_EXPIRITY_TIME),
 		},
 		Player: player,
 	})
 	return token.SignedString(tokenSecretKey)
 }
-
-
 
 func ReadPlayerToken(tokenString string) (IDPlayerTokenClaim, error) {
 	playerClaim := IDPlayerTokenClaim{}
@@ -119,5 +139,51 @@ func ReadPlayerToken(tokenString string) (IDPlayerTokenClaim, error) {
 		return claims.Player, nil
 	}  else {
 		return playerClaim, err
+	}
+}
+
+type RegisterPlayerReturn struct {
+	Token string
+	ID    string
+	AlreadyExists bool
+}
+
+func RegisterPlayer(player RegisterPlayerRequest) (RegisterPlayerReturn, error) {
+	foundPlayers, err := FilterPlayerWithUsername(player.Username)
+	if err != nil {
+		return RegisterPlayerReturn{}, err
+	}
+	if len(foundPlayers) > 0 {
+		return RegisterPlayerReturn{ AlreadyExists: true }, nil
+	}
+
+	nPlayer, err := CreatePlayer(player)
+	if err != nil {
+		return RegisterPlayerReturn{}, err
+	}
+	token, err := CreatePlayerToken(IDPlayerTokenClaim{
+		ID: nPlayer.ID,
+	})
+	if err != nil {
+		return RegisterPlayerReturn{}, err
+	}
+	return RegisterPlayerReturn{
+		Token: token,
+		ID:    nPlayer.ID,
+	}, nil
+}
+
+func LoginPlayer(requestPlayer LoginPlayerRequest) (Player, error) {
+
+	foundPlayer, err := GetPlayerByUsername(requestPlayer.Username)
+	reqPlayerHashedPsw := utils.CreateHash(requestPlayer.Password)
+	if err != nil {
+		return Player{}, nil
+	}
+	// check if the found user and the login user credentials are the same
+	if foundPlayer.Password == reqPlayerHashedPsw  {
+		return foundPlayer, nil
+	} else {
+		return Player{}, fmt.Errorf("Could not create the Player")
 	}
 }

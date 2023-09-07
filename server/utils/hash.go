@@ -16,7 +16,6 @@ func CreateHash(data string) string {
 func CompareHashes(inputData, storedHash string) bool {
 	// Generate hash for the input data
 	inputHash := CreateHash(inputData)
-
 	// Compare the generated hash with the stored hash
 	return inputHash == storedHash
 }

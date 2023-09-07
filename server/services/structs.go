@@ -6,13 +6,19 @@ type Player struct {
 	ID          string `json:"_id" bson:"_id"`
 	Avatar      string `json:"avatar"`
 	Username    string `json:"username"`
+	Password string `json:"password"`
 	Description string `json:"description"`
 }
 
-type RequestPlayer struct {
+type RegisterPlayerRequest struct {
 	Avatar      string `json:"avatar"`
 	Username    string `json:"username"`
 	Description string `json:"description"`
+	Password    string `json:"password"`
+}
+
+type LoginPlayerRequest struct {
+	Username string `json:"username"`
 	Password    string `json:"password"`
 }
 
