@@ -15,7 +15,6 @@ export const cookie = {
     },
     get: function(name: string):string | undefined  {
         const cookies = this.getAll()
-        console.log(cookies?.keys())
        return cookies?.get(name)
     }
 }

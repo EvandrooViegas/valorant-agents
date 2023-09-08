@@ -8,6 +8,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func newTokenCookie(token string) *fiber.Cookie {
+	return &fiber.Cookie{
+		Name:    "token",
+		Value:   token,
+		Expires: services.TOKEN_AND_COOKIE_EXPIRITY_TIME,
+		Path:    "/",
+	}
+}
 func RegisterPlayerHandler(c *fiber.Ctx) error {
 	body := c.Body()
 	var request CreatePlayerRequest
@@ -46,6 +54,9 @@ func RegisterPlayerHandler(c *fiber.Ctx) error {
 	return utils.WriteJSON(c, response)
 }
 
+type LoginHandlerResponseData struct {
+	LoggedSuccessfully bool `json:"logged_successfully"`
+}
 func LoginPlayerHandler(c *fiber.Ctx) error {
 	// read the body
 	body := c.Body()
@@ -63,14 +74,50 @@ func LoginPlayerHandler(c *fiber.Ctx) error {
 		return utils.WriteJSON(c, utils.WriteJSONpayload{
 			Status:  fiber.StatusAccepted,
 			Message: "Wrong Credentials",
+			Data: LoginHandlerResponseData{
+				LoggedSuccessfully: false,
+			},
 		})
 	}
-
+	token, err := services.CreatePlayerToken(foundPlayer.ID)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status: fiber.StatusInternalServerError,
+			Error: err,
+		})
+	}
+	c.Cookie(newTokenCookie(token))
 	return utils.WriteJSON(c, utils.WriteJSONpayload{
 		Status:  fiber.StatusOK,
 		Message: "Login Successfully",
+		Data: LoginHandlerResponseData{
+			LoggedSuccessfully: true,
+		},
+	})
+}
+
+func LogoutPlayerHandler(c *fiber.Ctx) error {
+	c.Cookie(newTokenCookie(""))
+	return utils.WriteJSON(c, utils.WriteJSONpayload{
+		Status:  fiber.StatusOK,
+		Message: "Logged Out",
+	})
+}
+
+func GetPlayerByUsernameHandler(c *fiber.Ctx) error {
+	username := c.Params("username")
+	player, err := services.GetPlayerByUsername(username)
+	if err != nil {
+		return utils.WriteJSON(c, utils.WriteJSONpayload{
+			Status: fiber.StatusBadRequest,
+			Error: err,
+		})
+	}
+	return utils.WriteJSON(c, utils.WriteJSONpayload{
+		Status: fiber.StatusOK,
+		Message: "Player found",
 		Data: map[string]interface{}{
-			"player": foundPlayer,
+			"player": player,
 		},
 	})
 }

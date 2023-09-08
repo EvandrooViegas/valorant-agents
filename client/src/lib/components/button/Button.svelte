@@ -27,7 +27,6 @@
 	export let intent: $$Props['intent'] = 'primary';
 	export let size: $$Props['size'] = 'medium';
 	export let dataTestId: $$Props['dataTestId'] = '';
-	$: console.log($$props);
 	$: loading = $$props.loading;
 </script>
 

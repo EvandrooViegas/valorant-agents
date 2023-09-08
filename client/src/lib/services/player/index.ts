@@ -3,7 +3,7 @@ import { cookie } from "../../../lib/utils/cookie"
 import server from "../../../lib/libs/axios"
 import type { iPlayer } from "../../../lib/types/player"
 
-type PlayerToCreate = iPlayer & { password: string }
+type PlayerToCreate = Omit<iPlayer & { password: string }, "id">
 type PlayerToLogin = Pick<iPlayer, "username"> & { password: string }
 const create = async (player: PlayerToCreate) => {
     try {

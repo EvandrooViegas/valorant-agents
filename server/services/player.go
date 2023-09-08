@@ -16,7 +16,6 @@ import (
 )
 
 const (
-	DATABASE_NAME     = "valgents"
 	PLAYER_COLLECTION = "players"
 )
 
@@ -107,7 +106,8 @@ func GetPlayerByUsername(username string) (Player, error) {
 	return player, nil
 }
 
-func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
+func CreatePlayerToken(ID string) (string, error) {
+	player := IDPlayerTokenClaim{ID}
 	err := godotenv.Load(".env")
 	if err != nil {
 		return "", err
@@ -122,29 +122,43 @@ func CreatePlayerToken(player IDPlayerTokenClaim) (string, error) {
 	return token.SignedString(tokenSecretKey)
 }
 
+func ReadTokenAndReturnPlayer(tokenString string) (Player, error) {
+	claims, err := ReadPlayerToken(tokenString)
+	if err != nil {
+		return Player{}, err
+	}
+
+	ID := claims.ID
+	player, err := GetPlayerByID(ID)
+	if err != nil {
+		return Player{}, err
+	}
+	return player, nil
+}
+
 func ReadPlayerToken(tokenString string) (IDPlayerTokenClaim, error) {
-	playerClaim := IDPlayerTokenClaim{}
 	err := godotenv.Load(".env")
 	if err != nil {
-		return playerClaim, err
+		return IDPlayerTokenClaim{}, err
 	}
 	tokenSecretKey := []byte(os.Getenv("TOKEN_SECRET_KEY"))
 
 	token, err := jwt.ParseWithClaims(tokenString, &PlayerTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return tokenSecretKey, nil
 	})
-
+	if err != nil {
+		return IDPlayerTokenClaim{}, err
+	}
 	if claims, ok := token.Claims.(*PlayerTokenClaims); ok && token.Valid {
-		playerClaim = claims.Player
 		return claims.Player, nil
-	}  else {
-		return playerClaim, err
+	} else {
+		return IDPlayerTokenClaim{}, err
 	}
 }
 
 type RegisterPlayerReturn struct {
-	Token string
-	ID    string
+	Token         string
+	ID            string
 	AlreadyExists bool
 }
 
@@ -154,16 +168,14 @@ func RegisterPlayer(player RegisterPlayerRequest) (RegisterPlayerReturn, error) 
 		return RegisterPlayerReturn{}, err
 	}
 	if len(foundPlayers) > 0 {
-		return RegisterPlayerReturn{ AlreadyExists: true }, nil
+		return RegisterPlayerReturn{AlreadyExists: true}, nil
 	}
 
 	nPlayer, err := CreatePlayer(player)
 	if err != nil {
 		return RegisterPlayerReturn{}, err
 	}
-	token, err := CreatePlayerToken(IDPlayerTokenClaim{
-		ID: nPlayer.ID,
-	})
+	token, err := CreatePlayerToken(nPlayer.ID)
 	if err != nil {
 		return RegisterPlayerReturn{}, err
 	}
@@ -181,7 +193,7 @@ func LoginPlayer(requestPlayer LoginPlayerRequest) (Player, error) {
 		return Player{}, nil
 	}
 	// check if the found user and the login user credentials are the same
-	if foundPlayer.Password == reqPlayerHashedPsw  {
+	if foundPlayer.Password == reqPlayerHashedPsw {
 		return foundPlayer, nil
 	} else {
 		return Player{}, fmt.Errorf("Could not create the Player")
